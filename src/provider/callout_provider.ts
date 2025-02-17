@@ -1,7 +1,7 @@
 import { getApi } from "obsidian-callout-manager";
 import { Notice, Plugin as ObsidianPlugin, Vault } from "obsidian";
 import { Suggestion, SuggestionContext, SuggestionProvider } from "./provider";
-import { CalloutProviderSource, CompletrSettings, intoCompletrPath } from "../settings";
+import { MyAutoCompletionSettings, CalloutProviderSource, intoCompletrPath } from "../settings";
 import { SuggestionBlacklist } from "./blacklist";
 import MyAutoCompletionPlugin from "../main";
 
@@ -72,8 +72,8 @@ class CalloutSuggestionProvider implements SuggestionProvider {
     this.loadedSuggestions = SuggestionBlacklist.filter(this.loadedSuggestions);
   }
 
-  getSuggestions(context: SuggestionContext, settings: CompletrSettings): Suggestion[] {
-    if (!settings.calloutProviderEnabled) return [];
+  getSuggestions(context: SuggestionContext, settings: MyAutoCompletionSettings): Suggestion[] {
+    if (!settings.enableCalloutProvider) return [];
     const { editor } = context;
     const lineNumber = context.start.line;
     const line = editor.getLine(lineNumber);

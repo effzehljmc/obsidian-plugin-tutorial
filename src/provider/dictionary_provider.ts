@@ -1,13 +1,13 @@
-import { CompletrSettings, WordInsertionMode } from "../settings";
+import { MyAutoCompletionSettings, WordInsertionMode } from "../settings";
 import { Suggestion, SuggestionContext, SuggestionProvider } from "./provider";
 import { maybeLowerCase } from "../editor_helpers";
 
 export abstract class DictionaryProvider implements SuggestionProvider {
   abstract readonly wordMap: Map<string, Iterable<string>>;
 
-  abstract isEnabled(settings: CompletrSettings): boolean;
+  abstract isEnabled(settings: MyAutoCompletionSettings): boolean;
 
-  getSuggestions(context: SuggestionContext, settings: CompletrSettings): Suggestion[] {
+  getSuggestions(context: SuggestionContext, settings: MyAutoCompletionSettings): Suggestion[] {
     if (!this.isEnabled(settings) || !context.query || context.query.length < settings.minWordTriggerLength) {
       return [];
     }
@@ -49,7 +49,7 @@ export abstract class DictionaryProvider implements SuggestionProvider {
           return match.startsWith(query);
         },
         (s) => {
-          if (settings.wordInsertionMode === WordInsertionMode.IGNORE_CASE_APPEND) {
+          if (settings.wordInsertionMode === WordInsertionMode.APPEND) {
             // In "append" mode, we keep the typed portion as-is and just append what's left
             return Suggestion.fromString(context.query + s.substring(query.length));
           } else {

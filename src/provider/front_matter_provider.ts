@@ -1,5 +1,5 @@
 import { Suggestion, SuggestionContext, SuggestionProvider } from "./provider";
-import { CompletrSettings } from "../settings";
+import { MyAutoCompletionSettings } from "../settings";
 import { CachedMetadata, Editor, getAllTags, MetadataCache, TFile } from "obsidian";
 import { isInFrontMatterBlock, matchWordBackwards, maybeLowerCase } from "../editor_helpers";
 
@@ -43,8 +43,8 @@ class FrontMatterSuggestionProvider implements SuggestionProvider {
   blocksAllOtherProviders = true;
   private fileSuggestionCache = new Map<string, YAMLKeyCache>();
 
-  getSuggestions(context: SuggestionContext, settings: CompletrSettings): Suggestion[] {
-    if (!settings.frontMatterProviderEnabled) return [];
+  getSuggestions(context: SuggestionContext, settings: MyAutoCompletionSettings): Suggestion[] {
+    if (!settings.enableFrontMatterProvider) return [];
 
     const editor = context.editor;
     const firstLine = editor.getLine(0);

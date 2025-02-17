@@ -1,5 +1,5 @@
 import { TFile, Vault } from "obsidian";
-import { CompletrSettings, intoCompletrPath } from "../settings";
+import { MyAutoCompletionSettings, intoCompletrPath } from "../settings";
 import { DictionaryProvider } from "./dictionary_provider";
 import { SuggestionBlacklist } from "./blacklist";
 
@@ -9,18 +9,18 @@ const NEW_LINE_REGEX = /\r?\n/;
 class ScannerSuggestionProvider extends DictionaryProvider {
   readonly wordMap: Map<string, Set<string>> = new Map();
 
-  isEnabled(settings: CompletrSettings): boolean {
-    return settings.fileScannerProviderEnabled;
+  isEnabled(settings: MyAutoCompletionSettings): boolean {
+    return settings.enableFileScannerProvider;
   }
 
-  async scanFiles(settings: CompletrSettings, files: TFile[]) {
+  async scanFiles(settings: MyAutoCompletionSettings, files: TFile[]) {
     for (const file of files) {
       await this.scanFile(settings, file, false);
     }
     await this.saveData(files[0].vault);
   }
 
-  async scanFile(settings: CompletrSettings, file: TFile, saveImmediately: boolean) {
+  async scanFile(settings: MyAutoCompletionSettings, file: TFile, saveImmediately: boolean) {
     const contents = await file.vault.cachedRead(file);
 
     // Exclude math code, code blocks, links, etc.
@@ -30,7 +30,7 @@ class ScannerSuggestionProvider extends DictionaryProvider {
     );
     for (const match of contents.matchAll(regex)) {
       const group = match[1];
-      if (!group || group.length < settings.minWordLength) continue;
+      if (!group || group.length < settings.minWordTriggerLength) continue;
       this.addWord(group);
     }
 

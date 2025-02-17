@@ -1,4 +1,4 @@
-import { CompletrSettings, intoCompletrPath } from "../settings";
+import { MyAutoCompletionSettings, intoCompletrPath } from "../settings";
 import { DictionaryProvider } from "./dictionary_provider";
 import { Vault } from "obsidian";
 import { SuggestionBlacklist } from "./blacklist";
@@ -9,11 +9,11 @@ const NEW_LINE_REGEX = /\r?\n/;
 class WordListSuggestionProvider extends DictionaryProvider {
   readonly wordMap: Map<string, string[]> = new Map();
 
-  isEnabled(settings: CompletrSettings): boolean {
-    return settings.wordListProviderEnabled;
+  isEnabled(settings: MyAutoCompletionSettings): boolean {
+    return settings.enableWordListProvider;
   }
 
-  async loadFromFiles(vault: Vault, settings: CompletrSettings): Promise<number> {
+  async loadFromFiles(vault: Vault, settings: MyAutoCompletionSettings): Promise<number> {
     this.wordMap.clear();
     const fileNames = await this.getRelativeFilePaths(vault);
 
@@ -28,7 +28,7 @@ class WordListSuggestionProvider extends DictionaryProvider {
 
       const lines = data.split(NEW_LINE_REGEX);
       for (const line of lines) {
-        if (!line || line.length < settings.minWordLength) continue;
+        if (!line || line.length < settings.minWordTriggerLength) continue;
         const key = line.charAt(0);
         if (!this.wordMap.has(key)) {
           this.wordMap.set(key, []);

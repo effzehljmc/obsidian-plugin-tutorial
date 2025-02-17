@@ -1,5 +1,5 @@
 import { Suggestion, SuggestionContext, SuggestionProvider } from "./provider";
-import { CompletrSettings, intoCompletrPath } from "../settings";
+import { MyAutoCompletionSettings, intoCompletrPath } from "../settings";
 import { BlockType, getLatexBlockType, maybeLowerCase } from "../editor_helpers";
 import { Notice, Vault } from "obsidian";
 import { SuggestionBlacklist } from "./blacklist";
@@ -10,9 +10,9 @@ const LATEX_COMMANDS_PATH = "latex_commands.json";
 class LatexSuggestionProvider implements SuggestionProvider {
   private loadedCommands: Suggestion[] = [];
 
-  getSuggestions(context: SuggestionContext, settings: CompletrSettings): Suggestion[] {
-    if (!settings.latexProviderEnabled) return [];
-    if (!context.query || context.query.length < settings.latexMinWordTriggerLength) return [];
+  getSuggestions(context: SuggestionContext, settings: MyAutoCompletionSettings): Suggestion[] {
+    if (!settings.enableLatexProvider) return [];
+    if (!context.query || context.query.length < settings.minWordTriggerLength) return [];
 
     const latexBlockType = getLatexBlockType(context.editor, context.start, settings.latexTriggerInCodeBlocks);
     if (!latexBlockType) return [];

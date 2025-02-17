@@ -1,6 +1,6 @@
 import { App, Editor, EditorSuggest, EditorSuggestContext, EditorSuggestTriggerInfo, TFile, setIcon, EditorPosition, MarkdownView } from "obsidian";
 import { Suggestion, SuggestionContext, SuggestionProvider } from "./provider/provider";
-import { CompletrSettings } from "./settings";
+import { MyAutoCompletionSettings } from "./settings";
 import SnippetManager from "./snippet_manager";
 import { FileScanner } from "./provider/scanner_provider";
 import { WordList } from "./provider/word_list_provider";
@@ -23,7 +23,7 @@ export default class SuggestionPopup extends EditorSuggest<Suggestion> {
 
   constructor(
     app: App,
-    private settings: CompletrSettings,
+    private settings: MyAutoCompletionSettings,
     private snippetManager: SnippetManager
   ) {
     super(app);
@@ -72,14 +72,22 @@ export default class SuggestionPopup extends EditorSuggest<Suggestion> {
     const providers = [FileScanner, WordList, Latex, Callout, FrontMatter] as SuggestionProvider[];
 
     for (const provider of providers) {
-      const suggestions = provider.getSuggestions(suggestionContext, this.settings);
-      console.log("[MyAutoCompletion] Provider returned", suggestions.length, "suggestions");
-      if (suggestions.length > 0) {
-        if (provider.blocksAllOtherProviders) {
-          allSuggestions = suggestions;
-          break;
+      try {
+        if (!provider.isEnabled?.(this.settings)) {
+          console.log("[MyAutoCompletion] Provider disabled:", provider.constructor.name);
+          continue;
         }
-        allSuggestions.push(...suggestions);
+        const suggestions = provider.getSuggestions(suggestionContext, this.settings);
+        console.log("[MyAutoCompletion] Provider", provider.constructor.name, "returned", suggestions.length, "suggestions");
+        if (suggestions.length > 0) {
+          if (provider.blocksAllOtherProviders) {
+            allSuggestions = suggestions;
+            break;
+          }
+          allSuggestions.push(...suggestions);
+        }
+      } catch (e) {
+        console.error("[MyAutoCompletion] Error getting suggestions from provider:", provider.constructor.name, e);
       }
     }
 
@@ -129,29 +137,23 @@ export default class SuggestionPopup extends EditorSuggest<Suggestion> {
 
   handleDocChange(): void {
     console.log("[MyAutoCompletion] handleDocChange called");
-    if (this.settings.autoTrigger && !this.shouldPreventNextTrigger) {
-      console.log("[MyAutoCompletion] autoTrigger is enabled, shouldPreventNextTrigger is false");
+    if (this.settings.autoTrigger) {
+      console.log("[MyAutoCompletion] autoTrigger is enabled");
       const activeView = this.app.workspace.getActiveViewOfType(MarkdownView);
       if (activeView?.editor) {
         console.log("[MyAutoCompletion] Found active editor, triggering suggestions");
-        this.trigger(activeView.editor, activeView.file);
+        // Always force trigger on document change
+        this.trigger(activeView.editor, activeView.file, true);
       } else {
         console.log("[MyAutoCompletion] No active editor found");
       }
     } else {
-      console.log("[MyAutoCompletion] Not triggering - autoTrigger:", this.settings.autoTrigger, "shouldPreventNextTrigger:", this.shouldPreventNextTrigger);
+      console.log("[MyAutoCompletion] Not triggering - autoTrigger disabled");
     }
   }
 
   trigger(editor: Editor, file: TFile | null, force: boolean = false): EditorSuggestTriggerInfo | null {
     console.log("[MyAutoCompletion] trigger called - force:", force);
-    
-    // Don't trigger if explicitly prevented (unless forced)
-    if (this.shouldPreventNextTrigger && !force) {
-      console.log("[MyAutoCompletion] Preventing trigger due to shouldPreventNextTrigger");
-      this.shouldPreventNextTrigger = false;
-      return null;
-    }
 
     const cursor = editor.getCursor();
     const line = editor.getLine(cursor.line);
