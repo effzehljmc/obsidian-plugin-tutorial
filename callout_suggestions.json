@@ -1,0 +1,44 @@
+[
+  {
+    "displayName": "Note",
+    "replacement": "note",
+    "icon": "lucide-pencil",
+    "color": "#448aff"
+  },
+  {
+    "displayName": "Info",
+    "replacement": "info",
+    "icon": "lucide-info",
+    "color": "#00b8d4"
+  },
+  {
+    "displayName": "Tip",
+    "replacement": "tip",
+    "icon": "lucide-flame",
+    "color": "#00bfa6"
+  },
+  {
+    "displayName": "Warning",
+    "replacement": "warning",
+    "icon": "lucide-alert-triangle",
+    "color": "#ff9100"
+  },
+  {
+    "displayName": "Danger",
+    "replacement": "danger",
+    "icon": "lucide-zap",
+    "color": "#ff1744"
+  },
+  {
+    "displayName": "Bug",
+    "replacement": "bug",
+    "icon": "lucide-bug",
+    "color": "#f50057"
+  },
+  {
+    "displayName": "Quote",
+    "replacement": "quote",
+    "icon": "quote-glyph",
+    "color": "#9e9e9e"
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "displayName": "\\alpha",
+    "replacement": "\\alpha"
+  },
+  {
+    "displayName": "\\beta",
+    "replacement": "\\beta"
+  },
+  {
+    "displayName": "\\frac{#}{#}",
+    "replacement": "\\frac{#}{#}"
+  },
+  {
+    "displayName": "\\begin{align}\n~\n\\end{align}",
+    "replacement": "\\begin{align}\n~\n\\end{align}"
+  }
+]

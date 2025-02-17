@@ -1,0 +1,10 @@
+{
+    "id": "my-auto-completion-plugin",
+    "name": "My Auto-Completion Plugin",
+    "version": "1.0.0",
+    "minAppVersion": "1.0.0",
+    "description": "A plugin providing advanced auto-completion features for Obsidian, derived from Obsidian Completr.",
+    "author": "Lukas Chagas",
+    "authorUrl": "https://github.com/LukasChagas",
+    "isDesktopOnly": false
+  }

@@ -1,0 +1,16 @@
+# Node Abhängigkeiten
+node_modules/
+
+# Build Ausgaben
+dist/
+*.js
+!esbuild.config.js
+
+# IDE spezifische Dateien
+.idea/
+.vscode/
+*.iml
+
+# Betriebssystem Dateien
+.DS_Store
+Thumbs.db 
